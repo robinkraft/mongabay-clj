@@ -1,62 +1,14 @@
 (ns mongabay-clj.core
-  (:use [clojure.data.json :only (read-json)])
+  (:use [cartodb.playground :only (big-insert insert-rows)]
+        [clojure.data.json :only (read-json)]
+        [clojure.contrib.string :only (chop)])
   (:require [clojure.java.io :as io]
             [cheshire.custom :as json]
-            [clj-http.client :as http]
-            [cartodb.core :as cartodb]))
+            [clj-http.client :as http]))
 
 (def mongabay-url "http://rfcx.org/mongabay")
 
-(defn body-encode
-  "JSON encode POST body"
-  [location lat long title description thumbnail-url]
-  (->> {"location" location
-        "lat" lat
-        "long" long
-        "title" title
-        "description" description
-        "thumbnail-url" thumbnail-url}
-       (json/generate-string)))
-
-(defn monga-post-query
-  [^String location lat long ^String title ^String description ^String thumbnail-url]
-  "Post a monga-bay query to get monga-bay content and
-   interpret results."
-  (let []
-    (-> (http/post mongabay-url {:headers nil
-                                 :save-request? true
-                                 :debug-body true
-                                 :body (body-encode
-                                        location
-                                        lat long
-                                        title description
-                                        thumbnail-url)})
-        (:body)
-        (json/parse-string))))
-
 (def creds (read-json (slurp (io/resource "creds.json"))))
-
-(def example-data
-  [{:guid 1
-    :loc 2
-    :lat 4
-    :lon 3
-    :title "test title"
-    :description "a"
-    :thumbnail "http://a.com"
-    :published "2013-12-04T14:55:00Z"
-    :updated "2013-12-04T14:55:00Z"
-    :keywords ["a" "b" "c"]}
-   {:guid 2
-    :loc 2
-    :lat 4
-    :lon 6
-    :title "tester 2"
-    :description "b"
-    :thumbnail "http://b.com"
-    :published "2013-12-04T14:55:00Z"
-    :updated "2013-12-04T14:55:00Z"
-    :keywords ["a" "b" "c"]}])
 
 (defn monga-get-query
   "Fetch and decode monga query"
@@ -78,7 +30,10 @@
 (defn prep-vals
   "Format collection for insert, including adding quotes and {}."
   [coll]
-  (->> (json/generate-string coll {:pretty true :escape-non-ascii true})
+  (->> (json/generate-string coll {:pretty true})
+       (drop 1)
+       (butlast)
+       (apply str)
        (format "{%s}")
        (#(surround-str % "'"))))
 
@@ -96,6 +51,9 @@
     (concat [(keys (first coll))]
             (map vals updated-map))))
 
+(defn try-me []
+  (let [data (convert-entries (monga-get-query))]
+    (apply insert-rows "mongabay" creds "mongabaydb" data)))
 
 
 
