@@ -2,7 +2,8 @@
   (:use [clojure.data.json :only (read-json)])
   (:require [clojure.java.io :as io]
             [cheshire.custom :as json]
-            [clj-http.client :as http]))
+            [clj-http.client :as http]
+            [cartodb.core :as cartodb]))
 
 (def mongabay-url "http://rfcx.org/mongabay")
 
