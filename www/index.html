@@ -183,6 +183,23 @@
                     <link rel="apple-touch-icon-precomposed" href="ico/apple-touch-icon-57-precomposed.png">
                                    <link rel="shortcut icon" href="ico/favicon.png">
 
+  <script type="infowindow/html" id="infowindow_template">
+    <div class="cartodb-popup">
+      <a href="#close" class="cartodb-popup-close-button close">x</a>
+
+       <div class="cartodb-popup-content-wrapper">
+         <div class="cartodb-popup-content">
+           <img style="width: 100%" src="{{content.data.thumbnail}}"></src>
+           <!-- content.data contains the field info -->
+           <h4>{{content.data.title}}</h4>
+           <p>{{content.data.lead}}</p>
+           <a href="{{content.data.loc}}">full article</a>
+         </div>
+       </div>
+       <div class="cartodb-popup-tip-container"></div>
+    </div>
+  </script>
+
   </head>
 
   <body data-spy="scroll" data-target=".bs-docs-sidebar">
@@ -204,7 +221,7 @@
                 <a href="./index.html">Home</a>
               </li>
               <li class="">
-                <a href="./getting-started.html">Most popular</a>
+                <a href="./getting-started.html">News Home</a>
               </li>
               <li class="">
                 <a href="./scaffolding.html">About</a>
@@ -255,48 +272,55 @@
         <div class="item active">
           <div class="container">
             <div class="carousel-caption">
-              <h1>Example headline.</h1>
+              <h1 class="article-title">a</h1>
               <div class="carousel-img">
                 <img src="http://s3.amazonaws.com/mongabay-images/13/GP04BXC.greenpeace.herkales.river.150.jpg" alt="">
               </div>
-              <p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-              <a class="btn btn-large btn-primary" href="#">Sign up today</a>
+              <p class="lead"></p>
             </div>
           </div>
         </div>
         <div class="item">
           <div class="container">
             <div class="carousel-caption">
-              <h1>Example headline2.</h1>
+              <h1 class="article-title">v</h1>
               <div class="carousel-img">
                 <img src="http://s3.amazonaws.com/mongabay-images/13/GP04BXC.greenpeace.herkales.river.150.jpg" alt="">
               </div>
-              <p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-              <a class="btn btn-large btn-primary" href="#">Sign up today</a>
+              <p class="lead"></p>
             </div>
           </div>
         </div>
         <div class="item">
           <div class="container">
             <div class="carousel-caption">
-              <h1>Example headline3.</h1>
+              <h1 class="article-title">d</h1>
               <div class="carousel-img">
                 <img src="http://s3.amazonaws.com/mongabay-images/13/GP04BXC.greenpeace.herkales.river.150.jpg" alt="">
               </div>
-              <p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-              <a class="btn btn-large btn-primary" href="#">Sign up today</a>
+              <p class="lead"></p>
             </div>
           </div>
         </div>
         <div class="item">
           <div class="container">
             <div class="carousel-caption">
-              <h1>Example headline4.</h1>
+              <h1 class="article-title">s</h1>
               <div class="carousel-img">
                 <img src="http://s3.amazonaws.com/mongabay-images/13/GP04BXC.greenpeace.herkales.river.150.jpg" alt="">
               </div>
-              <p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-              <a class="btn btn-large btn-primary" href="#">Sign up today</a>
+              <p class="lead"></p>
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="container">
+            <div class="carousel-caption">
+              <h1 class="article-title">e</h1>
+              <div class="carousel-img">
+                <img src="http://s3.amazonaws.com/mongabay-images/13/GP04BXC.greenpeace.herkales.river.150.jpg" alt="">
+              </div>
+              <p class="lead"></p>
             </div>
           </div>
         </div>
@@ -447,9 +471,25 @@
 
       var layerUrl = 'http://viz2.cartodb.com/api/v1/viz/3029/viz.json';
       cartodb.createLayer(map, layerUrl, function(layer) {
+         layer.infowindow.set('template', $('#infowindow_template').html());
          map.addLayer(layer);
       });
 
+      var items = $('#myCarousel').find('.item');
+      console.log(items);
+      var sql = new cartodb.SQL({ user: 'mongabay'});
+      sql.execute("SELECT * FROM {{table_name}} ORDER BY created_at ASC LIMIT 5", {table_name: 'mongabaydb'})
+        .done(function(data) {
+          var i = 0;
+          $.each(items, function(d){
+            $(d).find('h1').html(); 
+            $(d).find('.lead').first().html(data.rows[i].description);
+            $(d).find('img').first().src = data.rows[i].thumbnail;
+            console.log(data.rows[i]);
+            i++;
+          });
+          
+      });
     }
     window.onload = main;
     </script>
