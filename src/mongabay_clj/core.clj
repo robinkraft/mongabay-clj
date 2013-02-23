@@ -33,10 +33,6 @@
         (:body)
         (json/parse-string))))
 
-(defn- grab-feed
-  "returns the json from server side"
-  [])
-
 (def creds (read-json (slurp (io/resource "creds.json"))))
 
 (def example-data
@@ -71,13 +67,10 @@
   [results-vec & [sep]]
   (apply str (interpose sep results-vec)))
 
-
-
 (defn prep-vals
   "Format collection for insert, including adding quotes and {}."
   [coll]
-  (->> coll
-       (map #(concat-results % ","))
+  (->> (map #(concat-results % ",") coll)
        (map #(surround-str % "\""))
        (#(concat-results % ", "))
        (format "{%s}")
@@ -93,8 +86,9 @@
   "accepts a collection of maps and converts them into the appropriate
   clojure data structures."
   [coll]
-  (let [updated-map (map #(doto-map % [:keywords] prep-vals) m)]
-    (concat [(keys (first m))]
+  (let [updated-map (map #(doto-map % [:keywords] prep-vals) coll)]
+    (concat [(keys (first coll))]
             (map vals updated-map))))
+
 
 
