@@ -1,11 +1,10 @@
 (ns mongabay-clj.core
-  (:use [cartodb.core]
-        [clojure.data.json :only (read-json)])
+  (:use [clojure.data.json :only (read-json)])
   (:require [clojure.java.io :as io]
             [cheshire.custom :as json]
             [clj-http.client :as http]))
 
-(def monga-bay-api-url "http://rfcx.org/mongabay")
+(def mongabay-url "http://rfcx.org/mongabay")
 
 (defn body-encode
   "JSON encode POST body"
@@ -23,14 +22,14 @@
   "Post a monga-bay query to get monga-bay content and
    interpret results."
   (let []
-    (-> (http/post monga-bay-api-url {:headers nil
-                                      :save-request? true
-                                      :debug-body true
-                                      :body (body-encode
-                                             location
-                                             lat long
-                                             title description
-                                             thumbnail-url)})
+    (-> (http/post mongabay-url {:headers nil
+                                 :save-request? true
+                                 :debug-body true
+                                 :body (body-encode
+                                        location
+                                        lat long
+                                        title description
+                                        thumbnail-url)})
         (:body)
         (json/parse-string))))
 
@@ -62,15 +61,40 @@
     :updated "2013-12-04T14:55:00Z"
     :keywords ["a" "b" "c"]}])
 
-(defn convert-keywords
-  [m]
-  (apply str m))
+(defn surround-str
+  "Surround a supplied string with supplied string."
+  [s surround-with]
+  (format "%s%s%s" surround-with s surround-with))
 
-(defn convert-map
-  "accepts "
-  [m]
-  (let [title (keys (first m))]
-    (concat [title]
-            (map vals m))))
+(defn concat-results
+  "Concatenate a collection of strings, with an optional separator."
+  [results-vec & [sep]]
+  (apply str (interpose sep results-vec)))
 
-;; {"1","10,11,12,13"}
+
+
+(defn prep-vals
+  "Format collection for insert, including adding quotes and {}."
+  [coll]
+  (->> coll
+       (map #(concat-results % ","))
+       (map #(surround-str % "\""))
+       (#(concat-results % ", "))
+       (format "{%s}")
+       (#(surround-str % "'"))))
+
+(defn doto-map
+  "accepts a map, vector of keys, and a function (with arguments) to
+  apply the parameterized function to the specified key-values."
+  [m ks f & args]
+  (reduce #(apply update-in %1 [%2] f args) m ks))
+
+(defn convert-entries
+  "accepts a collection of maps and converts them into the appropriate
+  clojure data structures."
+  [coll]
+  (let [updated-map (map #(doto-map % [:keywords] prep-vals) m)]
+    (concat [(keys (first m))]
+            (map vals updated-map))))
+
+
