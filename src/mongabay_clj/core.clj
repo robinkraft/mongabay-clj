@@ -57,6 +57,13 @@
     :updated "2013-12-04T14:55:00Z"
     :keywords ["a" "b" "c"]}])
 
+(defn monga-get-query
+  "Fetch and decode monga query"
+  []
+  (-> (http/get mongabay-url)
+      (:body)
+      (json/parse-string true)))
+
 (defn surround-str
   "Surround a supplied string with supplied string."
   [s surround-with]
@@ -70,9 +77,7 @@
 (defn prep-vals
   "Format collection for insert, including adding quotes and {}."
   [coll]
-  (->> (map #(concat-results % ",") coll)
-       (map #(surround-str % "\""))
-       (#(concat-results % ", "))
+  (->> (json/generate-string coll {:pretty true :escape-non-ascii true})
        (format "{%s}")
        (#(surround-str % "'"))))
 
@@ -89,6 +94,7 @@
   (let [updated-map (map #(doto-map % [:keywords] prep-vals) coll)]
     (concat [(keys (first coll))]
             (map vals updated-map))))
+
 
 
 
