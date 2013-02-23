@@ -1,6 +1,6 @@
-(ns mongabay-clj.core)
+(ns mongabay-clj.core
+  (:use [cartodb.core]))
 
-(defn -main
-  "I don't do a whole lot."
-  [& args]
-  (println "Hello, World!"))
+(defn- grab-feed
+  "returns the json from server side"
+  [])
