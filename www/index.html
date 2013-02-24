@@ -202,10 +202,12 @@
            <!-- content.data contains the field info -->
            <h4>{{content.data.title}}</h4>
            <img style="width: 100%" src="{{content.data.thumbnail}}"></src>
-           <p>{{content.data.description}}</p>
-           <p>
-           <a href="{{content.data.loc}}" target="_blank">full article</a>
-           </p>
+           <a href="{{content.data.loc}}" target="_blank">
+             <p>{{content.data.description}}</p>
+             <p>
+             see full article
+             </p>
+           </a>
          </div>
        </div>
        <div class="cartodb-popup-tip-container"></div>
