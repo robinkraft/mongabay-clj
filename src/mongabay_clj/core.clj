@@ -101,7 +101,6 @@
   []
   (let [data (convert-this (mongabay-query))]
     (do (delete-all "mongabay" creds "mongabaydb")
-        (apply "mongabay" creds "mongabaydb" data)
+        (apply insert-rows "mongabay" creds "mongabaydb" data)
         (query "UPDATE mongabaydb SET the_geom=cdb_latlng(lat,lon)" "mongabay"
                :oauth creds))))
-
