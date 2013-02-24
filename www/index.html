@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>mongabay</title>
+    <title>MongaBay Map</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -195,9 +195,30 @@
         z-index: 1000;
       }
 
-  /* .cartodb-popup-content-wrapper {
-        width:400px !important;
-      }*/
+      .cartodb-popup-content .btn-large {
+        position:relative;
+        margin-top:10px;
+        margin-left:auto;
+        margin-right:auto;
+        color:white;
+        width:78%;
+      }
+
+      .cartodb-popup-content .btn-large:hover {
+        color:gray;
+      }
+
+      .masthead-search .mb-input {
+        border-top-left-radius:8px;
+        border-bottom-left-radius:8px;
+      }
+
+      .masthead-search .mb-input-button {
+        border-top-right-radius:6px;
+        border-bottom-right-radius:6px;
+        font:normal 30px Arial;
+      }
+
 
     </style>
     <!-- Le fav and touch icons -->
@@ -214,15 +235,15 @@
        <div class="cartodb-popup-content-wrapper">
          <div class="cartodb-popup-content">
            <p>
-            <h4>{{content.data.title}}</h4>
-           </p>
+            <h4 style="color:black;font-size:120%;text-align:center;">{{content.data.title}}</h4>
+           <!--</p>
 
             <img style="width: 100%" src="{{content.data.thumbnail}}"><br/>
 
-           <p>
-            <a href="{{content.data.loc}}" target="_blank">Full Article</a>
+           <p>-->
+            <a class="btn btn-primary btn-large" href="{{content.data.loc}}" target="_blank">View Article</a>
            </p>
-           <p>{{content.data.description}}</p>
+           <!--<p>{{content.data.description}}</p>-->
          </div>
        </div>
        <div class="cartodb-popup-tip-container"></div>
@@ -428,17 +449,18 @@
       cartodb.createLayer(map, layerUrl, {interactivity: null, infowindows: false}, function(layer) {
         map.addLayer(layer);
       });
+
       var mapLayer;
       var layerUrl = 'http://mongabay.cartodb.com/api/v1/viz/21719/viz.json';
       cartodb.createLayer(map, layerUrl, function(layer) {
          mapLayer = layer;
+         mapLayer.infowindow.set('template', $('#infowindow_template').html());
          mapLayer.on('featureClick', function(e, latlng, pos, data) {
           var b = map.getBounds();
           var c = (b.getSouthEast().lng - b.getSouthWest().lng) / 6;
           var d = (b.getNorthEast().lat - b.getSouthWest().lat) / 4;
           map.panTo([latlng[0] + d, latlng[1] - c]);
          });
-         mapLayer.infowindow.set('template', $('#infowindow_template').html());
          map.addLayer(mapLayer);
       });
 
