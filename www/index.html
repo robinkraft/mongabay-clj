@@ -110,7 +110,7 @@
       margin-bottom: 60px;
       margin-left: -20px;
       margin-right: -20px;
-      height: 200px;
+      height: 300px;
       overflow: hidden;
 /*        background-color: #393e4a;
         background-color: rgba(57,62,75,0.95);*/
@@ -133,7 +133,7 @@
     }
 
     .carousel .item {
-      height: 190px;
+      height: 280px;
       padding-left: 60px;
     }
     .carousel-img {
@@ -156,12 +156,11 @@
     .carousel-caption {
       background-color: transparent;
       position: static;
-      max-width: 550px;
+      max-width: 90%;
       padding: 0 20px;
       margin-top: 10px;
     }
-    .carousel-caption h1,
-    .carousel-caption .lead {
+    .carousel-caption h1 {
       margin: 0;
       line-height: 1.25;
       color: #fff;
@@ -169,6 +168,16 @@
         color: rgba(57,62,75,0.95);
       text-shadow: 0 1px 1px rgba(0,0,0,.4);
         font-size: 30px;
+    }
+    .carousel-caption .lead {
+      margin: 0;
+      padding-top: 10px;
+      line-height: 1.25;
+      color: #fff;
+        color: #393e4a;
+        color: rgba(57,62,75,0.95);
+      text-shadow: 0 1px 1px rgba(0,0,0,.4);
+        font-size: 20px;
     }
       .carousel-caption .btn {
         font-size: 18px;
@@ -189,11 +198,13 @@
 
        <div class="cartodb-popup-content-wrapper">
          <div class="cartodb-popup-content">
-           <img style="width: 100%" src="{{content.data.thumbnail}}"></src>
            <!-- content.data contains the field info -->
            <h4>{{content.data.title}}</h4>
-           <p>{{content.data.lead}}</p>
+           <img style="width: 100%" src="{{content.data.thumbnail}}"></src>
+           <p>{{content.data.description}}</p>
+           <p>
            <a href="{{content.data.loc}}">full article</a>
+           </p>
          </div>
        </div>
        <div class="cartodb-popup-tip-container"></div>
@@ -272,9 +283,20 @@
         <div class="item active">
           <div class="container">
             <div class="carousel-caption">
+              <h1 class="article-title"></h1>
+              <div class="carousel-img">
+                
+              </div>
+              <p class="lead"></p>
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="container">
+            <div class="carousel-caption">
               <h1 class="article-title">a</h1>
               <div class="carousel-img">
-                <img src="http://s3.amazonaws.com/mongabay-images/13/GP04BXC.greenpeace.herkales.river.150.jpg" alt="">
+                
               </div>
               <p class="lead"></p>
             </div>
@@ -283,9 +305,9 @@
         <div class="item">
           <div class="container">
             <div class="carousel-caption">
-              <h1 class="article-title">v</h1>
+              <h1 class="article-title">a</h1>
               <div class="carousel-img">
-                <img src="http://s3.amazonaws.com/mongabay-images/13/GP04BXC.greenpeace.herkales.river.150.jpg" alt="">
+                
               </div>
               <p class="lead"></p>
             </div>
@@ -294,9 +316,9 @@
         <div class="item">
           <div class="container">
             <div class="carousel-caption">
-              <h1 class="article-title">d</h1>
+              <h1 class="article-title">a</h1>
               <div class="carousel-img">
-                <img src="http://s3.amazonaws.com/mongabay-images/13/GP04BXC.greenpeace.herkales.river.150.jpg" alt="">
+                
               </div>
               <p class="lead"></p>
             </div>
@@ -305,20 +327,9 @@
         <div class="item">
           <div class="container">
             <div class="carousel-caption">
-              <h1 class="article-title">s</h1>
+              <h1 class="article-title">a</h1>
               <div class="carousel-img">
-                <img src="http://s3.amazonaws.com/mongabay-images/13/GP04BXC.greenpeace.herkales.river.150.jpg" alt="">
-              </div>
-              <p class="lead"></p>
-            </div>
-          </div>
-        </div>
-        <div class="item">
-          <div class="container">
-            <div class="carousel-caption">
-              <h1 class="article-title">e</h1>
-              <div class="carousel-img">
-                <img src="http://s3.amazonaws.com/mongabay-images/13/GP04BXC.greenpeace.herkales.river.150.jpg" alt="">
+                
               </div>
               <p class="lead"></p>
             </div>
@@ -328,28 +339,6 @@
       <a class="left carousel-control" href="#myCarousel" data-slide="prev">&lsaquo;</a>
       <a class="right carousel-control" href="#myCarousel" data-slide="next">&rsaquo;</a>
     </div><!-- /.carousel -->
-
-
-
-
-<div class="bs-docs-social">
-  <div class="container">
-    <ul class="bs-docs-social-buttons">
-      <li>
-        <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=twitter&repo=bootstrap&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="100px" height="20px"></iframe>
-      </li>
-      <li>
-        <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=twitter&repo=bootstrap&type=fork&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="102px" height="20px"></iframe>
-      </li>
-      <li class="follow-btn">
-        <a href="https://twitter.com/twbootstrap" class="twitter-follow-button" data-link-color="#0069D6" data-show-count="true">Follow @twbootstrap</a>
-      </li>
-      <li class="tweet-btn">
-        <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://twitter.github.com/bootstrap/" data-count="horizontal" data-via="twbootstrap" data-related="mdo:Creator of Twitter Bootstrap">Tweet</a>
-      </li>
-    </ul>
-  </div>
-</div>
 
 <div class="container">
 
@@ -469,27 +458,38 @@
         attribution: 'MapBox'
       }).addTo(map);
 
-      var layerUrl = 'http://viz2.cartodb.com/api/v1/viz/3029/viz.json';
+      var mapLayer;
+      var layerUrl = 'http://mongabay.cartodb.com/api/v1/viz/21719/viz.json';
       cartodb.createLayer(map, layerUrl, function(layer) {
-         layer.infowindow.set('template', $('#infowindow_template').html());
-         map.addLayer(layer);
+         mapLayer = layer;
+         mapLayer.infowindow.set('template', $('#infowindow_template').html());
+         map.addLayer(mapLayer);
       });
+
 
       var items = $('#myCarousel').find('.item');
       console.log(items);
       var sql = new cartodb.SQL({ user: 'mongabay'});
-      sql.execute("SELECT * FROM {{table_name}} ORDER BY created_at ASC LIMIT 5", {table_name: 'mongabaydb'})
+      sql.execute("SELECT * FROM {{table_name}} WHERE thumbnail != '' ORDER BY created_at ASC LIMIT 5", {table_name: 'mongabaydb'})
         .done(function(data) {
           var i = 0;
-          $.each(items, function(d){
-            $(d).find('h1').html(); 
-            $(d).find('.lead').first().html(data.rows[i].description);
-            $(d).find('img').first().src = data.rows[i].thumbnail;
-            console.log(data.rows[i]);
+          $.each(items, function(){
+            $(this).find('h1').html(data.rows[i].title); 
+            $(this).find('.lead').html(data.rows[i].description);
+            var img = new Image();
+            img.src = data.rows[i].thumbnail;
+            $(this).find('.carousel-img').append(img);
             i++;
-          });
-          
+          }); 
       });
+
+      $('.mb-input-button').click(function(){
+        var s = $('mb-input').val();
+        mapLayer.setQuery("SELECT * FROM {{table_name}} WHERE description ILIKE '%"+s+"%'");//.done(function(){console.log('none')})
+      mapLayer.on('error', function(err) {
+        console.log("there was some problem: " + err);
+      });
+      })
     }
     window.onload = main;
     </script>
