@@ -97,6 +97,7 @@
         width: 100%;
         color: #000;
         pointer-events:auto;
+        cursor: pointer;
       }
       .masthead-links a {
         color: #000;
@@ -260,7 +261,7 @@
     </div>
     <ul class="masthead-links">
       <li>
-        <a >Activism</a>
+        <a >Children</a>
       </li>
       <li>
         <a >Climate change</a>
@@ -269,7 +270,7 @@
         <a >Species</a>
       </li>
       <li>
-        <a >Rivers and oceans</a>
+        <a >River</a>
       </li>
       <li>
         <a class="clear">Clear</a>
@@ -492,11 +493,16 @@
       $('.mb-input-button').click(function(){
         var s = $('.mb-input').val();
         mapLayer.setQuery("SELECT * FROM {{table_name}} WHERE description ILIKE '%"+s+"%'");
-      })
+      });
       $('.masthead-links .clear').click(function(){
         $('.mb-input').val('');
         mapLayer.setQuery("SELECT * FROM {{table_name}}");
-      })
+      });
+      $('.masthead-links a:not(.clear)').click(function(){
+        var s = $(this).html();
+        mapLayer.setQuery("SELECT * FROM {{table_name}} WHERE description ILIKE '%"+s+"%'");
+        $('.mb-input').val(s);
+      });
 
     }
     window.onload = main;
