@@ -195,9 +195,19 @@
         z-index: 1000;
       }
 
-  /* .cartodb-popup-content-wrapper {
-        width:400px !important;
-      }*/
+      .cartodb-popup-content .btn-large {
+        position:relative;
+        margin-top:10px;
+        margin-left:auto;
+        margin-right:auto;
+        color:white;
+      }
+
+      .cartodb-popup-content .btn-large:hover {
+        color:gray;
+      }
+
+
 
     </style>
     <!-- Le fav and touch icons -->
@@ -220,9 +230,9 @@
             <img style="width: 100%" src="{{content.data.thumbnail}}"><br/>
 
            <p>
-            <a href="{{content.data.loc}}" target="_blank">Full Article</a>
+            <a class="btn btn-primary btn-large" href="{{content.data.loc}}" target="_blank">Read Full Article</a>
            </p>
-           <p>{{content.data.description}}</p>
+           <!--<p>{{content.data.description}}</p>-->
          </div>
        </div>
        <div class="cartodb-popup-tip-container"></div>
