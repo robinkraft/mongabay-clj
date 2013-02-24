@@ -434,6 +434,10 @@
         attribution: 'MapBox'
       }).addTo(map);
 
+      var layerUrl = 'http://mongabay.cartodb.com/api/v1/viz/21773/viz.json';
+      cartodb.createLayer(map, layerUrl, {interactivity: null, infowindows: false}, function(layer) {
+        map.addLayer(layer);
+      });
       var mapLayer;
       var layerUrl = 'http://mongabay.cartodb.com/api/v1/viz/21719/viz.json';
       cartodb.createLayer(map, layerUrl, function(layer) {
