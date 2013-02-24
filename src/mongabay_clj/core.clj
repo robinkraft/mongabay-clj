@@ -1,6 +1,7 @@
 (ns mongabay-clj.core
   (:use [cartodb.playground]
         [cartodb.core]
+        [clojureql.internal]
         [clojure.data.json :only (read-json)]
         [clojure.contrib.string :only (chop)])
   (:require [clojure.java.io :as io]
@@ -18,7 +19,10 @@
 (def creds
   "cartodb credentials stored as a JSON object in the resources
   directory"
-  (read-json (slurp (io/resource "creds.json"))))
+  (let [json-creds (io/resource "creds.json")]
+    (if (nil? json-creds)
+      (throw (Exception. "creds.json must be in resources path"))
+      (read-json (slurp json-creds)))))
 
 (defn mongabay-query
   "Fetch and decode mongabay JSON"
@@ -92,7 +96,6 @@
         title (vec (keys (first new-coll)))]
     (concat [title]
             (map (comp vec vals) new-coll))))
-
 
 (defn upload-stories
   "grabs the JSON of the stories with the supplied keys, translates
