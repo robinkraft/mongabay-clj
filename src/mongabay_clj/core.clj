@@ -1,10 +1,9 @@
 (ns mongabay-clj.core
   (:use [cartodb.playground]
-        [cartodb.core]
-        [clojureql.internal]
-        [clojure.data.json :only (read-json)]
-        [clojure.contrib.string :only (chop)])
-  (:require [clojure.java.io :as io]
+        [mongabay-clj.sqlize]
+        [clojure.data.json :only (read-json)])
+  (:require [cartodb.core :as carto]
+            [clojure.java.io :as io]
             [cheshire.custom :as json]
             [clj-http.client :as http]))
 
@@ -31,29 +30,6 @@
       (:body)
       (json/parse-string true)))
 
-(defn surround-str
-  "Surround a supplied string with supplied string."
-  [s surround-with]
-  (format "%s%s%s" surround-with s surround-with))
-
-(defn concat-results
-  "Concatenate a collection of strings, with an optional separator."
-  [results-vec & [sep]]
-  (apply str (interpose sep results-vec)))
-
-(defn- crop-string
-  "accepts a string and crops the first and last characters, returns
-  the original but middle string"
-  [s]
-  (->> s (drop 1) (butlast) (apply str)))
-
-(defn prep-vals
-  "Format collection for insert, including adding quotes and {} " [coll]
-  (->> (json/generate-string coll {:pretty true})
-       (crop-string)
-       (format "{%s}")
-       (#(surround-str % "'"))))
-
 (defn doto-map
   "accepts a map, vector of keys, and a function (with arguments) to
   apply the parameterized function to the specified key-values."
@@ -67,12 +43,6 @@
   (let [updated-map (map #(doto-map % [:keywords] prep-vals) coll)]
     (concat [(keys (first coll))]
             (map vals updated-map))))
-
-(defn clean-str
-  "accepts a string and preps it for an SQL query, specifically
-  removing any single quotes"
-  [s]
-  (.replaceAll s "[']" ""))
 
 (defn clean-collection
   "Remove single apostrophes from the title and description values in
@@ -105,6 +75,6 @@
   []
   (let [data (convert-this (mongabay-query))]
     (do (apply insert-rows "mongabay" creds "mongabaydb" data)
-        (query "UPDATE mongabaydb SET the_geom=cdb_latlng(lat,lon)" "mongabay"
-               :oauth creds))))
+        (carto/query "UPDATE mongabaydb SET the_geom=cdb_latlng(lat,lon)" "mongabay"
+                     :oauth creds))))
 
