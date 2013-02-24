@@ -9,7 +9,7 @@
 
 (def field-vec
   "vector of fields (as keywords) to be uploaded to cartodb"
-  [:loc :lat :lon :title :thumbnail :description])
+  [:guid :loc :lat :lon :title :thumbnail :description])
 
 (def mongabay-url
   "a JSON endpoint for all mongabay articles with geo-coordinates"
@@ -93,6 +93,7 @@
     (concat [title]
             (map (comp vec vals) new-coll))))
 
+
 (defn upload-stories
   "grabs the JSON of the stories with the supplied keys, translates
   the resulting string from the post request, and then uploads the
@@ -100,7 +101,7 @@
   and then georeference the latitude and longitude fields"
   []
   (let [data (convert-this (mongabay-query))]
-    (do (delete-all "mongabay" creds "mongabaydb")
-        (apply insert-rows "mongabay" creds "mongabaydb" data)
+    (do (apply insert-rows "mongabay" creds "mongabaydb" data)
         (query "UPDATE mongabaydb SET the_geom=cdb_latlng(lat,lon)" "mongabay"
                :oauth creds))))
+
