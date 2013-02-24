@@ -203,7 +203,7 @@
            <img style="width: 100%" src="{{content.data.thumbnail}}"></src>
            <p>{{content.data.description}}</p>
            <p>
-           <a href="{{content.data.loc}}">full article</a>
+           <a href="{{content.data.loc}}" target="_blank">full article</a>
            </p>
          </div>
        </div>
@@ -260,16 +260,19 @@
     </div>
     <ul class="masthead-links">
       <li>
-        <a href="http://github.com/twitter/bootstrap" >Activism</a>
+        <a >Activism</a>
       </li>
       <li>
-        <a href="./getting-started.html#examples" >Climate change</a>
+        <a >Climate change</a>
       </li>
       <li>
-        <a href="./extend.html" >Species</a>
+        <a >Species</a>
       </li>
       <li>
-        <a href="./extend.html" >Rivers and oceans</a>
+        <a >Rivers and oceans</a>
+      </li>
+      <li>
+        <a class="clear">Clear</a>
       </li>
     </ul>
   </div>
@@ -464,13 +467,16 @@
          mapLayer = layer;
          mapLayer.infowindow.set('template', $('#infowindow_template').html());
          map.addLayer(mapLayer);
+               mapLayer.on('error', function(err) {
+        console.log("there was some problem: " + err);
+      });
       });
 
 
       var items = $('#myCarousel').find('.item');
-      console.log(items);
+
       var sql = new cartodb.SQL({ user: 'mongabay'});
-      sql.execute("SELECT * FROM {{table_name}} WHERE thumbnail != '' ORDER BY created_at ASC LIMIT 5", {table_name: 'mongabaydb'})
+      sql.execute("SELECT * FROM {{table_name}} WHERE thumbnail != '' ORDER BY created_at DESC LIMIT 5", {table_name: 'mongabaydb'})
         .done(function(data) {
           var i = 0;
           $.each(items, function(){
@@ -484,12 +490,14 @@
       });
 
       $('.mb-input-button').click(function(){
-        var s = $('mb-input').val();
-        mapLayer.setQuery("SELECT * FROM {{table_name}} WHERE description ILIKE '%"+s+"%'");//.done(function(){console.log('none')})
-      mapLayer.on('error', function(err) {
-        console.log("there was some problem: " + err);
-      });
+        var s = $('.mb-input').val();
+        mapLayer.setQuery("SELECT * FROM {{table_name}} WHERE description ILIKE '%"+s+"%'");
       })
+      $('.masthead-links .clear').click(function(){
+        $('.mb-input').val('');
+        mapLayer.setQuery("SELECT * FROM {{table_name}}");
+      })
+
     }
     window.onload = main;
     </script>
