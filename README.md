@@ -1,13 +1,11 @@
 # mongabay-clj
 
-A Clojure library designed to ... well, that part is up to you.
+A project to map environmental news as it happens.  Making the news
+spatially searchable.
 
-## Usage
+The stories are sourced from [mongabay.com](www.mongabay.com), an
+environmental science and conservation news website, with a special
+focus on tropical rainforests.
 
-FIXME
+![](https://dl.dropbox.com/u/5365589/twitter/monga.png)
 
-## License
-
-Copyright © 2013 FIXME
-
-Distributed under the Eclipse Public License, the same as Clojure.
