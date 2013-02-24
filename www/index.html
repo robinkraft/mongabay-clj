@@ -22,6 +22,9 @@
         <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v2/themes/css/cartodb.ie.css" />
     <![endif]-->
     <style>
+      body {
+        min-width: 800px;
+      }
       #map {
         width: 100%; height: 529px;
         display: block;
@@ -184,7 +187,9 @@
         font-size: 18px;
       margin-top: 10px;
       }
-
+      .cartodb-popup-content-wrapper{
+        z-index: 1000;
+      }
     </style>
     <!-- Le fav and touch icons -->
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="ico/apple-touch-icon-144-precomposed.png">
@@ -199,15 +204,16 @@
 
        <div class="cartodb-popup-content-wrapper">
          <div class="cartodb-popup-content">
-           <!-- content.data contains the field info -->
-           <h4>{{content.data.title}}</h4>
-           <img style="width: 100%" src="{{content.data.thumbnail}}"></src>
-           <a href="{{content.data.loc}}" target="_blank">
-             <p>{{content.data.description}}</p>
-             <p>
-             see full article
-             </p>
-           </a>
+           <p>
+            <h4>{{content.data.title}}</h4>
+           </p>
+
+            <img style="width: 100%" src="{{content.data.thumbnail}}"><br/>
+
+           <p>
+            <a href="{{content.data.loc}}" target="_blank">Full Article</a>
+           </p>
+           <p>{{content.data.description}}</p>
          </div>
        </div>
        <div class="cartodb-popup-tip-container"></div>
@@ -235,16 +241,16 @@
                 <a href="./index.html">Home</a>
               </li>
               <li class="">
-                <a href="./getting-started.html">News Home</a>
+                <a href="http://www.mongabay.com/">News Home</a>
               </li>
               <li class="">
-                <a href="./scaffolding.html">About</a>
+                <a href="http://www.mongabay.com/about.html">About</a>
               </li>
               <li class="">
-                <a href="./base-css.html">Newsletter</a>
+                <a href="http://news.mongabay.com/newsletters.html">Newsletter</a>
               </li>
               <li class="">
-                <a href="./components.html">Contact</a>
+                <a href="http://www.mongabay.com/contact_mongabay.htm">Contact</a>
               </li>
             </ul>
           </div>
@@ -263,7 +269,7 @@
     </div>
     <ul class="masthead-links">
       <li>
-        <a >Children</a>
+        <a >Wildlife</a>
       </li>
       <li>
         <a >Climate change</a>
@@ -468,18 +474,21 @@
       var layerUrl = 'http://mongabay.cartodb.com/api/v1/viz/21719/viz.json';
       cartodb.createLayer(map, layerUrl, function(layer) {
          mapLayer = layer;
+         mapLayer.on('featureClick', function(e, latlng, pos, data) {
+          var b = map.getBounds();
+          var c = (b.getSouthEast().lng - b.getSouthWest().lng) / 6;
+          var d = (b.getNorthEast().lat - b.getSouthWest().lat) / 4;
+          map.panTo([latlng[0] + d, latlng[1] - c]);
+         });
          mapLayer.infowindow.set('template', $('#infowindow_template').html());
          map.addLayer(mapLayer);
-               mapLayer.on('error', function(err) {
-        console.log("there was some problem: " + err);
-      });
       });
 
 
       var items = $('#myCarousel').find('.item');
 
       var sql = new cartodb.SQL({ user: 'mongabay'});
-      sql.execute("SELECT * FROM {{table_name}} WHERE thumbnail != '' ORDER BY created_at DESC LIMIT 5", {table_name: 'mongabaydb'})
+      sql.execute("SELECT * FROM {{table_name}} WHERE thumbnail != '' and title != '' ORDER BY created_at DESC LIMIT 5", {table_name: 'mongabaydb'})
         .done(function(data) {
           var i = 0;
           $.each(items, function(){
