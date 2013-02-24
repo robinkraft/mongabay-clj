@@ -7,9 +7,10 @@
   :repositories {"conjars" "http://conjars.org/repo/"}
   :dependencies [[org.clojure/clojure "1.4.0"]
                  [org.clojure/math.numeric-tower "0.0.1"]
+                 [org.clojure/data.json "0.2.1"]
                  [clj-http "0.4.3"]
                  [cheshire "4.0.0"]
-                 [cartodb-clj "1.5.2"]
+                 [cartodb-clj "1.5.0"]
                  [org.clojure/clojure-contrib "1.2.0"]]
   :profiles {:dev {:dependencies [[org.apache.hadoop/hadoop-core "0.20.2-dev"]
                                   [midje-cascalog "0.4.0"]
