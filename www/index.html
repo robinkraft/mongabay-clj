@@ -441,11 +441,11 @@
       })
 
       // add a nice baselayer from mapbox
-      L.tileLayer("https://dnv9my2eseobd.cloudfront.net/v3/cartodb.map-41exmwk3/{z}/{x}/{y}.png", {
+      L.tileLayer("https://dnv9my2eseobd.cloudfront.net/v3/cartodb.map-4xtxp73f/{z}/{x}/{y}.png", {
         attribution: 'MapBox'
       }).addTo(map);
 
-      var layerUrl = 'http://mongabay.cartodb.com/api/v1/viz/21773/viz.json';
+      var layerUrl = 'http://mongabay.cartodb.com/api/v1/viz/21719/viz.json';
       cartodb.createLayer(map, layerUrl, {interactivity: null, infowindows: false}, function(layer) {
         map.addLayer(layer);
       });
