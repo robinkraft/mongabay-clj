@@ -111,7 +111,7 @@
   "Main function uploads new stories to cartodb.
 
    Usage:
-     > java -jar target/mongabay-clj-0.1.0-SNAPSHOT-standalone.jar"
+     > java -jar mongabay-clj-0.1.0-SNAPSHOT-standalone.jar email@email.com"  
   [table & email-addresses]
   (let [return-map (upload-stories table)
         body (format "Uploaded %d stories to CartoDB table %s" (:total_rows return-map) table)]
