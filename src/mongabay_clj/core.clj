@@ -13,7 +13,7 @@
 
 (def mongabay-url
   "a JSON endpoint for all mongabay articles with geo-coordinates"
-  "http://news.mongabay.com/json/")
+  "http://news.mongabay.com/map/json/")
 
 (def creds
   "cartodb credentials stored as a JSON object in the resources
