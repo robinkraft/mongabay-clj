@@ -22,7 +22,7 @@
 
 (def mongabay-url
   "a JSON endpoint for all mongabay articles with geo-coordinates"
-  "http://news.mongabay.com/json/")
+  "http://news.mongabay.com/map/json/")
 
 (defn get-creds
   [fname]
