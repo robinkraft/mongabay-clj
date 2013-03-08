@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Bootstrap</title>
+    <title>MongaBay Map</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -22,10 +22,23 @@
         <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v2/themes/css/cartodb.ie.css" />
     <![endif]-->
     <style>
+      body {
+        min-width: 800px;
+      }
       #map {
         width: 100%; height: 529px;
         display: block;
         float: left; position: absolute; z-index:0;
+      }
+      .navbar-inverse .navbar-inner {
+        background-image: none;
+        background-repeat: no-repeat;
+        filter: none;
+        background-color: #393e4a;
+        background-color: rgba(57,62,75,0.95);
+      }
+      .navbar-inverse .nav .active > a, .navbar-inverse .nav .active > a:hover, .navbar-inverse .nav .active > a:focus {
+        color: #8cc640;
       }
       .masthead .containerx {
         background-color: transparent;
@@ -36,30 +49,32 @@
         margin: 0 0 0 20px;
         z-index:30;
         pointer-events:none;
+
       }
       .masthead-search {
         float: left; position: relative;
         margin-top: 120px;
         line-height: 80px;
         width: 100%;
-        background-color: transparent;
-        background-color: rgba(255,255,255,0.4);
-        border-top: 1px solid #fff;
-        border-top: 1px solid rgba(255,255,255,0.4);
-        border-bottom: 1px solid #ddd;
-        border-bottom: 1px solid rgba(255,255,255,0.4);
-         -moz-border-radius: 10px;
-        -webkit-border-radius: 10px;
-        -khtml-border-radius: 10px;
-        border-radius: 10px;
+        color: #fff;
+        background-color: #393e4a;
+        background-color: rgba(57,62,75,0.95);
+        -moz-border-radius: 6px;
+        -webkit-border-radius: 6px;
+        -khtml-border-radius: 6px;
+        border-radius: 6px;
       }
       .masthead-search .mb-title {
         float: left; width: 90%; line-height: 40px; font-size: 38px;
         padding: 12px 8px 2px 20px; margin: 0; text-align: left;
+        font-weight: bold;
+        text-transform: uppercase;
+        font-family: "Proxima Nova", sans-serif;
       }
       .masthead-search .mb-sub-title {
         float: left; width: 90%; line-height: 25px; font-size: 22px;
         padding: 2px 8px 10px 20px; margin: 0; text-align: left;
+        color: #ddd;
       }
       .masthead-search .mb-input{
         float: left; width: 375px; line-height: 40px; font-size: 32px;
@@ -74,6 +89,7 @@
         padding: 0px 8px 0 8px;
         font: bold 32px Arial;
         color: #FFFFFF;
+        background: #8cc640;
         border: none;
         letter-spacing: -1px;
         cursor: pointer;
@@ -81,13 +97,138 @@
       }
       .masthead-links {
         float: left; position: relative;
-        width: 100%;
+        width: 97%;
+        margin-left:1.5%;
         color: #000;
         pointer-events:auto;
+        cursor: pointer;
+        background-color:#ccc;
+        border-bottom-left-radius:6px;
+        border-bottom-right-radius:6px;
+        border:solid 1px #393e4a;
+
       }
       .masthead-links a {
         color: #000;
       }
+      .masthead-links a:hover {
+        color: #888;
+      }
+
+ /* CUSTOMIZE THE CAROUSEL
+    -------------------------------------------------- */
+
+    .article-slide {
+      margin-top:20px;
+    }
+
+    /* Carousel base class */
+    .carousel {
+      margin-bottom: 60px;
+      margin-left: -20px;
+      margin-right: -20px;
+      height: 300px;
+      overflow: hidden;
+/*        background-color: #393e4a;
+        background-color: rgba(57,62,75,0.95);*/
+    }
+
+    .carousel .container {
+      position: relative;
+      float: left; height: 100%;
+      z-index: 9;
+    }
+
+    .carousel-control {
+      height: 80px;
+      margin-top: 0;
+      font-size: 120px;
+      text-shadow: 0 1px 1px rgba(0,0,0,.4);
+      background-color: transparent;
+      border: 0;
+      z-index: 10;
+    }
+
+    .carousel .item {
+      height: 280px;
+      padding-left: 60px;
+    }
+    .carousel-img {
+      position: relative; float: left;
+      margin: 2px 20px 0 0;
+      padding: 18px 0 18px 18px;
+      border: 1px solid #393e4a;
+      border: 1px solid rgba(57,62,75,0.95);
+      width: 290px;
+      -moz-border-radius: 6px;
+      -webkit-border-radius: 6px;
+      -khtml-border-radius: 6px;
+      border-radius: 6px;
+    }
+    .carousel-img img {
+      width: 270px;   
+      height: 180px;
+    }
+
+    .carousel-caption {
+      background-color: transparent;
+      position: static;
+      max-width: 90%;
+      padding: 0 20px;
+      margin-top: 10px;
+    }
+    .carousel-caption h1 {
+      margin: 0;
+      line-height: 1.25;
+      color: #fff;
+        color: #393e4a;
+        color: rgba(57,62,75,0.95);
+      text-shadow: 0 1px 1px rgba(0,0,0,.4);
+        font-size: 30px;
+    }
+    .carousel-caption .lead {
+      margin: 0;
+      padding-top: 10px;
+      line-height: 1.25;
+      color: #fff;
+        color: #393e4a;
+        color: rgba(57,62,75,0.95);
+      text-shadow: 0 1px 1px rgba(0,0,0,.4);
+        font-size: 20px;
+    }
+      .carousel-caption .btn {
+        font-size: 18px;
+      margin-top: 10px;
+      }
+      .cartodb-popup-content-wrapper{
+        z-index: 1000;
+      }
+
+      .cartodb-popup-content .btn-large {
+        position:relative;
+        margin-top:10px;
+        margin-left:auto;
+        margin-right:auto;
+        color:white;
+        width:78%;
+      }
+
+      .cartodb-popup-content .btn-large:hover {
+        color:gray;
+      }
+
+      .masthead-search .mb-input {
+        border-top-left-radius:8px;
+        border-bottom-left-radius:8px;
+      }
+
+      .masthead-search .mb-input-button {
+        border-top-right-radius:6px;
+        border-bottom-right-radius:6px;
+        font:normal 30px Arial;
+      }
+
+
     </style>
     <!-- Le fav and touch icons -->
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="ico/apple-touch-icon-144-precomposed.png">
@@ -95,6 +236,28 @@
       <link rel="apple-touch-icon-precomposed" sizes="72x72" href="ico/apple-touch-icon-72-precomposed.png">
                     <link rel="apple-touch-icon-precomposed" href="ico/apple-touch-icon-57-precomposed.png">
                                    <link rel="shortcut icon" href="ico/favicon.png">
+
+  <script type="infowindow/html" id="infowindow_template">
+    <div class="cartodb-popup">
+      <a href="#close" class="cartodb-popup-close-button close">x</a>
+
+       <div class="cartodb-popup-content-wrapper">
+         <div class="cartodb-popup-content">
+           <p>
+            <h4 style="color:black;font-size:120%;text-align:center;">{{content.data.title}}</h4>
+           <!--</p>
+
+            <img style="width: 100%" src="{{content.data.thumbnail}}"><br/>
+
+           <p>-->
+            <a class="btn btn-primary btn-large" href="{{content.data.loc}}" target="_blank">View Article</a>
+           </p>
+           <!--<p>{{content.data.description}}</p>-->
+         </div>
+       </div>
+       <div class="cartodb-popup-tip-container"></div>
+    </div>
+  </script>
 
   </head>
 
@@ -110,29 +273,23 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="brand" href="./index.html">Bootstrap</a>
+          <a class="brand" href="./index.html">MongaBay</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
               <li class="active">
                 <a href="./index.html">Home</a>
               </li>
               <li class="">
-                <a href="./getting-started.html">Get started</a>
+                <a href="http://www.mongabay.com/">News Home</a>
               </li>
               <li class="">
-                <a href="./scaffolding.html">Scaffolding</a>
+                <a href="http://www.mongabay.com/about.html">About</a>
               </li>
               <li class="">
-                <a href="./base-css.html">Base CSS</a>
+                <a href="http://news.mongabay.com/newsletters.html">Newsletter</a>
               </li>
               <li class="">
-                <a href="./components.html">Components</a>
-              </li>
-              <li class="">
-                <a href="./javascript.html">JavaScript</a>
-              </li>
-              <li class="">
-                <a href="./customize.html">Customize</a>
+                <a href="http://www.mongabay.com/contact_mongabay.htm">Contact</a>
               </li>
             </ul>
           </div>
@@ -145,101 +302,95 @@
   <div class="containerx">
     <div class="masthead-search">
       <div class="mb-title">Environmental News</div>
-      <div class="mb-sub-title">Access real-time geospatial news</div>
+      <div class="mb-sub-title">Access the latest geospatial news</div>
       <input class="mb-input"></input>
       <input class="mb-input-button" type="submit" value="Search">
     </div>
     <ul class="masthead-links">
       <li>
-        <a href="http://github.com/twitter/bootstrap" >Activism</a>
+        <a >Wildlife</a>
       </li>
       <li>
-        <a href="./getting-started.html#examples" >Climate change</a>
+        <a >Climate change</a>
       </li>
       <li>
-        <a href="./extend.html" >Species</a>
+        <a >Species</a>
       </li>
       <li>
-        <a href="./extend.html" >Rivers and oceans</a>
+        <a >River</a>
+      </li>
+      <li>
+        <a class="clear">Clear</a>
       </li>
     </ul>
   </div>
 </div>
 
-<div class="bs-docs-social">
-  <div class="container">
-    <ul class="bs-docs-social-buttons">
-      <li>
-        <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=twitter&repo=bootstrap&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="100px" height="20px"></iframe>
-      </li>
-      <li>
-        <iframe class="github-btn" src="http://ghbtns.com/github-btn.html?user=twitter&repo=bootstrap&type=fork&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="102px" height="20px"></iframe>
-      </li>
-      <li class="follow-btn">
-        <a href="https://twitter.com/twbootstrap" class="twitter-follow-button" data-link-color="#0069D6" data-show-count="true">Follow @twbootstrap</a>
-      </li>
-      <li class="tweet-btn">
-        <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://twitter.github.com/bootstrap/" data-count="horizontal" data-via="twbootstrap" data-related="mdo:Creator of Twitter Bootstrap">Tweet</a>
-      </li>
-    </ul>
-  </div>
-</div>
 
-<div class="container">
-
-  <div class="marketing">
-
-    <h1>Introducing Bootstrap.</h1>
-    <p class="marketing-byline">Need reasons to love Bootstrap? Look no further.</p>
-
-    <div class="row-fluid">
-      <div class="span4">
-        <img class="marketing-img" src="img/bs-docs-twitter-github.png">
-        <h2>By nerds, for nerds.</h2>
-        <p>Built at Twitter by <a href="http://twitter.com/mdo">@mdo</a> and <a href="http://twitter.com/fat">@fat</a>, Bootstrap utilizes <a href="http://lesscss.org">LESS CSS</a>, is compiled via <a href="http://nodejs.org">Node</a>, and is managed through <a href="http://github.com">GitHub</a> to help nerds do awesome stuff on the web.</p>
+    <!-- Carousel
+    ================================================== -->
+    <div id="myCarousel" class="carousel slide article-slide">
+      <div class="carousel-inner">
+        <div class="item active">
+          <div class="container">
+            <div class="carousel-caption">
+              <h1 class="article-title"></h1>
+              <div class="carousel-img">
+                
+              </div>
+              <p class="lead"></p>
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="container">
+            <div class="carousel-caption">
+              <h1 class="article-title">a</h1>
+              <div class="carousel-img">
+                
+              </div>
+              <p class="lead"></p>
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="container">
+            <div class="carousel-caption">
+              <h1 class="article-title">a</h1>
+              <div class="carousel-img">
+                
+              </div>
+              <p class="lead"></p>
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="container">
+            <div class="carousel-caption">
+              <h1 class="article-title">a</h1>
+              <div class="carousel-img">
+                
+              </div>
+              <p class="lead"></p>
+            </div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="container">
+            <div class="carousel-caption">
+              <h1 class="article-title">a</h1>
+              <div class="carousel-img">
+                
+              </div>
+              <p class="lead"></p>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="span4">
-        <img class="marketing-img" src="img/bs-docs-responsive-illustrations.png">
-        <h2>Made for everyone.</h2>
-        <p>Bootstrap was made to not only look and behave great in the latest desktop browsers (as well as IE7!), but in tablet and smartphone browsers via <a href="./scaffolding.html#responsive">responsive CSS</a> as well.</p>
-      </div>
-      <div class="span4">
-        <img class="marketing-img" src="img/bs-docs-bootstrap-features.png">
-        <h2>Packed with features.</h2>
-        <p>A 12-column responsive <a href="./scaffolding.html#gridSystem">grid</a>, dozens of components, <a href="./javascript.html">JavaScript plugins</a>, typography, form controls, and even a <a href="./customize.html">web-based Customizer</a> to make Bootstrap your own.</p>
-      </div>
-    </div>
+      <a class="left carousel-control" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+      <a class="right carousel-control" href="#myCarousel" data-slide="next">&rsaquo;</a>
+    </div><!-- /.carousel -->
 
-    <hr class="soften">
-
-    <h1>Built with Bootstrap.</h1>
-    <p class="marketing-byline">For even more sites built with Bootstrap, <a href="http://builtwithbootstrap.tumblr.com/" target="_blank">visit the unofficial Tumblr</a> or <a href="./getting-started.html#examples">browse the examples</a>.</p>
-    <div class="row-fluid">
-      <ul class="thumbnails example-sites">
-        <li class="span3">
-          <a class="thumbnail" href="http://soundready.fm/" target="_blank">
-            <img src="img/example-sites/soundready.png" alt="SoundReady.fm">
-          </a>
-        </li>
-        <li class="span3">
-          <a class="thumbnail" href="http://kippt.com/" target="_blank">
-            <img src="img/example-sites/kippt.png" alt="Kippt">
-          </a>
-        </li>
-        <li class="span3">
-          <a class="thumbnail" href="http://www.gathercontent.com/" target="_blank">
-            <img src="img/example-sites/gathercontent.png" alt="Gather Content">
-          </a>
-        </li>
-        <li class="span3">
-          <a class="thumbnail" href="http://www.jshint.com/" target="_blank">
-            <img src="img/example-sites/jshint.png" alt="JS Hint">
-          </a>
-        </li>
-      </ul>
-     </div>
-
-  </div>
 
 </div>
 
@@ -249,6 +400,7 @@
     ================================================== -->
     <footer class="footer">
       <div class="container">
+       <!-- 
         <p>Designed and built with all the love in the world by <a href="http://twitter.com/mdo" target="_blank">@mdo</a> and <a href="http://twitter.com/fat" target="_blank">@fat</a>.</p>
         <p>Code licensed under <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License v2.0</a>, documentation under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
         <p><a href="http://glyphicons.com">Glyphicons Free</a> licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
@@ -259,6 +411,7 @@
           <li class="muted">&middot;</li>
           <li><a href="https://github.com/twitter/bootstrap/blob/master/CHANGELOG.md">Changelog</a></li>
         </ul>
+      -->
       </div>
     </footer>
 
@@ -299,13 +452,58 @@
       })
 
       // add a nice baselayer from mapbox
-      L.tileLayer("https://dnv9my2eseobd.cloudfront.net/v3/cartodb.map-eeoepub0/{z}/{x}/{y}.png", {
+      L.tileLayer("https://dnv9my2eseobd.cloudfront.net/v3/cartodb.map-4xtxp73f/{z}/{x}/{y}.png", {
         attribution: 'MapBox'
       }).addTo(map);
 
-      var layerUrl = 'http://viz2.cartodb.com/api/v1/viz/3029/viz.json';
+      var layerUrl = 'http://mongabay.cartodb.com/api/v1/viz/21719/viz.json';
+      cartodb.createLayer(map, layerUrl, {interactivity: null, infowindows: false}, function(layer) {
+        map.addLayer(layer);
+      });
+
+      var mapLayer;
+      var layerUrl = 'http://mongabay.cartodb.com/api/v1/viz/21719/viz.json';
       cartodb.createLayer(map, layerUrl, function(layer) {
-         map.addLayer(layer);
+         mapLayer = layer;
+         mapLayer.infowindow.set('template', $('#infowindow_template').html());
+         mapLayer.on('featureClick', function(e, latlng, pos, data) {
+          var b = map.getBounds();
+          var c = (b.getSouthEast().lng - b.getSouthWest().lng) / 6;
+          var d = (b.getNorthEast().lat - b.getSouthWest().lat) / 4;
+          map.panTo([latlng[0] + d, latlng[1] - c]);
+         });
+         map.addLayer(mapLayer);
+      });
+
+
+      var items = $('#myCarousel').find('.item');
+
+      var sql = new cartodb.SQL({ user: 'mongabay'});
+      sql.execute("SELECT * FROM {{table_name}} WHERE thumbnail != '' and title != '' ORDER BY created_at DESC LIMIT 5", {table_name: 'mongabaydb'})
+        .done(function(data) {
+          var i = 0;
+          $.each(items, function(){
+            $(this).find('h1').html(data.rows[i].title); 
+            $(this).find('.lead').html(data.rows[i].description);
+            var img = new Image();
+            img.src = data.rows[i].thumbnail;
+            $(this).find('.carousel-img').append(img);
+            i++;
+          }); 
+      });
+
+      $('.mb-input-button').click(function(){
+        var s = $('.mb-input').val();
+        mapLayer.setQuery("SELECT * FROM {{table_name}} WHERE description ILIKE '%"+s+"%'");
+      });
+      $('.masthead-links .clear').click(function(){
+        $('.mb-input').val('');
+        mapLayer.setQuery("SELECT * FROM {{table_name}}");
+      });
+      $('.masthead-links a:not(.clear)').click(function(){
+        var s = $(this).html();
+        mapLayer.setQuery("SELECT * FROM {{table_name}} WHERE description ILIKE '%"+s+"%'");
+        $('.mb-input').val(s);
       });
 
     }
