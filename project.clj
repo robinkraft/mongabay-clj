@@ -4,6 +4,7 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :resources-path "resources"
+  :main mongabay-clj.core
   :repositories {"conjars" "http://conjars.org/repo/"}
   :dependencies [[org.clojure/clojure "1.4.0"]
                  [org.clojure/math.numeric-tower "0.0.1"]
@@ -12,7 +13,8 @@
                  [cheshire "4.0.0"]
                  [clojureql "1.0.4"]
                  [cartodb-clj "1.5.0"]
-                 [org.clojure/clojure-contrib "1.2.0"]]
+                 [org.clojure/clojure-contrib "1.2.0"]
+                 [org.clojars.robinkraft/clj-aws "0.0.2-SNAPSHOT"]]
   :profiles {:dev {:dependencies [[org.apache.hadoop/hadoop-core "0.20.2-dev"]
                                   [midje-cascalog "0.4.0"]
                                   [incanter/incanter-charts "1.3.0"]]
