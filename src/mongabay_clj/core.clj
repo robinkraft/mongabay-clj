@@ -1,11 +1,20 @@
 (ns mongabay-clj.core
+  "This namespace retrieves articles from a Mongabay.com and uploads them to CartoDB. The
+   articles are then displayed on a map at http://news.mongabay.com/json.
+
+   Two credentials files are necessary for this to work:
+     resources/creds.json
+     resources/aws_creds.json"
   (:use [cartodb.playground]
         [mongabay-clj.sqlize]
-        [clojure.data.json :only (read-json)])
+        [clojure.data.json :only (read-json)]
+        [clj-aws.core]
+        [clj-aws.ses])
   (:require [cartodb.core :as carto]
             [clojure.java.io :as io]
             [cheshire.custom :as json]
-            [clj-http.client :as http]))
+            [clj-http.client :as http])
+  (:gen-class :main true))
 
 (def field-vec
   "vector of fields (as keywords) to be uploaded to cartodb"
@@ -15,13 +24,24 @@
   "a JSON endpoint for all mongabay articles with geo-coordinates"
   "http://news.mongabay.com/json/")
 
-(def creds
-  "cartodb credentials stored as a JSON object in the resources
-  directory"
-  (let [json-creds (io/resource "creds.json")]
+(defn get-creds
+  [fname]
+  (let [json-creds (io/resource fname)]
     (if (nil? json-creds)
-      (throw (Exception. "creds.json must be in resources path"))
+      (throw (Exception. (format "%s must be in resources path" fname)))
       (read-json (slurp json-creds)))))
+
+(def creds
+  "cartodb credentials are stored as a JSON object in the resources
+  directory"
+  (let [fname "creds.json"]
+    (get-creds fname)))
+
+(def aws-creds
+  "aws credentials are stored as a JSON object in the resources
+  directory"
+  (let [fname "aws_creds.json"]
+    (get-creds fname)))
 
 (defn mongabay-query
   "Fetch and decode mongabay JSON"
@@ -76,3 +96,24 @@
        (str "UPDATE " table-name " SET the_geom=cdb_latlng(lat,lon)")
        "mongabay" :oauth creds))))
 
+(defn notify-by-email
+  ""
+  [address-vec body]
+  (let [subject "Mongabay map update"
+        clnt (client (credentials (:access-id aws-creds) (:private-key aws-creds)))
+        from "mongabay@gmail.com"
+        dst (destination address-vec)
+        msg (message subject body)]
+    (send-email clnt from dst msg)))
+
+
+(defn -main
+  "Main function uploads new stories to cartodb.
+
+   Usage:
+     > java -jar target/mongabay-clj-0.1.0-SNAPSHOT-standalone.jar"
+  [table & email-addresses]
+  (let [return-map (upload-stories table)
+        body (format "Uploaded %d stories to CartoDB table %s" (:total_rows return-map) table)]
+    (if (seq? email-addresses)
+      (notify-by-email email-addresses body))))
