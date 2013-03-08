@@ -1,7 +1,7 @@
 (ns mongabay-clj.core-test
-  (:use clojure.test
-        mongabay-clj.core))
+  (:use mongabay-clj.core
+        [midje sweet]))
 
-(deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 0 1))))
+(fact
+  (let [return-map (upload-stories "monga_test")]
+    (>  (:total_rows return-map) 0)) => true)
