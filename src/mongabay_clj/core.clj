@@ -1,26 +1,34 @@
 (ns mongabay-clj.core
+  "This namespace retrieves articles from a Mongabay.com and uploads them to CartoDB. The
+   articles are then displayed on a map at http://news.mongabay.com/json.
+
+   Two credentials files are necessary for this to work:
+     resources/creds.json
+     resources/aws_creds.json"
   (:use [cartodb.playground]
         [mongabay-clj.sqlize]
-        [clojure.data.json :only (read-json)])
+        [clojure.data.json :only (read-json)]
+        [clj-aws.core]
+        [clj-aws.ses])
   (:require [cartodb.core :as carto]
             [clojure.java.io :as io]
             [cheshire.custom :as json]
-            [clj-http.client :as http]))
+            [clj-http.client :as http])
+  (:gen-class :main true))
 
 (def field-vec
   "vector of fields (as keywords) to be uploaded to cartodb"
-  [:guid :loc :lat :lon :title :thumbnail :description])
+  [:guid :loc :lat :lon :title :thumbnail :description :published :author :updated]) ;; :keywords 
 
 (def mongabay-url
   "a JSON endpoint for all mongabay articles with geo-coordinates"
   "http://news.mongabay.com/map/json/")
 
-(def creds
-  "cartodb credentials stored as a JSON object in the resources
-  directory"
-  (let [json-creds (io/resource "creds.json")]
+(defn get-creds
+  [fname]
+  (let [json-creds (io/resource fname)]
     (if (nil? json-creds)
-      (throw (Exception. "creds.json must be in resources path"))
+      (throw (Exception. (format "%s must be in resources path" fname)))
       (read-json (slurp json-creds)))))
 
 (defn mongabay-query
@@ -60,19 +68,42 @@
   Example usage:
     (upload-stories \"monga_test\")
     => {:time 0.061, :total_rows 331, :rows []}"
-  [table-name]
+  [table-name cartodb-creds]
   (let [data (convert-entries (mongabay-query))]
     (do
 
       ;; delete existing entries
-      (delete-all "mongabay" creds table-name)
+      (delete-all "mongabay" cartodb-creds table-name)
 
       ;; insert the new stories as rows into the cartodb table
-      (apply insert-rows "mongabay" creds table-name data)
+      (apply insert-rows "mongabay" cartodb-creds table-name data)
 
       ;; georeference the table using the coordinate variables named
       ;; lat and lon
       (carto/query
        (str "UPDATE " table-name " SET the_geom=cdb_latlng(lat,lon)")
-       "mongabay" :oauth creds))))
+       "mongabay" :oauth cartodb-creds))))
 
+(defn notify-by-email
+  ""
+  [aws-creds address-vec body]
+  (let [subject "Mongabay map update"
+        clnt (client (credentials (:access-id aws-creds) (:private-key aws-creds)))
+        from "mongabay@gmail.com"
+        dst (destination address-vec)
+        msg (message subject body)]
+    (send-email clnt from dst msg)))
+
+(defn -main
+  "Main function uploads new stories to cartodb and (optionally) sends a
+   notification email upon completion.
+
+   Usage:
+     > java -jar mongabay-clj-0.1.0-SNAPSHOT-standalone.jar monga_test email@email.com"  
+  [table & email-addresses]
+  (let [cartodb-creds (get-creds "creds.json")
+        aws-creds (get-creds "aws_creds.json")
+        return-map (upload-stories table cartodb-creds)
+        body (format "Uploaded %d stories to CartoDB table '%s'" (:total_rows return-map) table)]
+    (if (seq? email-addresses)
+      (notify-by-email aws-creds email-addresses body))))
