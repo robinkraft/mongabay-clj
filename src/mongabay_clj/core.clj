@@ -18,7 +18,7 @@
 
 (def field-vec
   "vector of fields (as keywords) to be uploaded to cartodb"
-  [:guid :loc :lat :lon :title :thumbnail :description :published]) ;; :keywords :author :updated
+  [:guid :loc :lat :lon :title :thumbnail :description :published :author :updated]) ;; :keywords 
 
 (def mongabay-url
   "a JSON endpoint for all mongabay articles with geo-coordinates"
