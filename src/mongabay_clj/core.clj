@@ -50,7 +50,8 @@
   translation into the SQL query"
   [m]
   (-> (select-keys m field-vec)
-      (doto-map [:title :description] clean-str)))
+      (doto-map [:title :description] clean-str)
+      (doto-map [:keywords] csv-ify)))
 
 (defn convert-entries
   "accepts a collection of maps and converts them into the appropriate
@@ -77,6 +78,8 @@
       (delete-all "mongabay" cartodb-creds table-name)
 
       ;; insert the new stories as rows into the cartodb table
+
+      
       (apply insert-rows "mongabay" cartodb-creds table-name data)
 
       ;; georeference the table using the coordinate variables named
