@@ -75,18 +75,18 @@
     (do
 
       ;; delete existing entries
-      (delete-all "mongabay" cartodb-creds table-name)
+      (delete-all (:user cartodb-creds) cartodb-creds table-name)
 
       ;; insert the new stories as rows into the cartodb table
 
       
-      (apply insert-rows "mongabay" cartodb-creds table-name data)
+      (apply insert-rows (:user cartodb-creds) cartodb-creds table-name data)
 
       ;; georeference the table using the coordinate variables named
       ;; lat and lon
       (carto/query
        (str "UPDATE " table-name " SET the_geom=cdb_latlng(lat,lon)")
-       "mongabay" :oauth cartodb-creds))))
+       (:user cartodb-creds) :oauth cartodb-creds))))
 
 (defn notify-by-email
   ""
