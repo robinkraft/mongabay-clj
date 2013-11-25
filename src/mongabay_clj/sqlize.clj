@@ -8,3 +8,8 @@
   removing any single quotes"
   [s]
   (.replaceAll s "[']" "''"))
+
+(defn csv-ify
+  [coll]
+  {:pre [(every? string? coll)]}
+  (clojure.string/join "," coll))
