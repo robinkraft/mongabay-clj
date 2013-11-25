@@ -1,4 +1,4 @@
-(defproject mongabay-clj "0.1.0-SNAPSHOT"
+(defproject mongabay-clj "0.2.0-SNAPSHOT"
   :description "parse mongabay stories, upload them to cartodb"
   :url "mongabay.com"
   :license {:name "Eclipse Public License"
