@@ -13,7 +13,8 @@
   (:require [cartodb.core :as carto]
             [clojure.java.io :as io]
             [cheshire.custom :as json]
-            [clj-http.client :as http])
+            [clj-http.client :as http]
+            [clj-time.format :as date])
   (:gen-class :main true))
 
 (def field-vec
@@ -39,6 +40,14 @@
       (:body)
       (json/parse-string true)))
 
+(defn date-ify
+  "Convert `published` string to proper ISO-style dates (e.g. `December 25, 1999` -> `1999-12-25`)."
+  [s]
+  (let [words->date (date/formatter "MMM dd, YYYY")
+        date->iso (date/formatter "YYYY-MM-dd")]
+    (->> (date/parse words->date s)
+         (date/unparse date->iso))))
+
 (defn doto-map
   "accepts a map, vector of keys, and a function (with arguments) to
   apply the parameterized function to the specified key-values."
@@ -51,7 +60,8 @@
   [m]
   (-> (select-keys m field-vec)
       (doto-map [:title :description] clean-str)
-      (doto-map [:keywords] csv-ify)))
+      (doto-map [:keywords] csv-ify)
+      (doto-map [:published] date-ify)))
 
 (defn convert-entries
   "accepts a collection of maps and converts them into the appropriate
@@ -79,7 +89,6 @@
 
       ;; insert the new stories as rows into the cartodb table
 
-      
       (apply insert-rows (:user cartodb-creds) cartodb-creds table-name data)
 
       ;; georeference the table using the coordinate variables named

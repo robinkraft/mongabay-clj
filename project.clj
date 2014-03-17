@@ -1,4 +1,4 @@
-(defproject mongabay-clj "0.1.0-SNAPSHOT"
+(defproject mongabay-clj "0.2.0-SNAPSHOT"
   :description "parse mongabay stories, upload them to cartodb"
   :url "mongabay.com"
   :license {:name "Eclipse Public License"
@@ -14,7 +14,8 @@
                  [clojureql "1.0.4"]
                  [cartodb-clj "1.5.0"]
                  [org.clojure/clojure-contrib "1.2.0"]
-                 [org.clojars.robinkraft/clj-aws "0.0.2-SNAPSHOT"]]
+                 [org.clojars.robinkraft/clj-aws "0.0.2-SNAPSHOT"]
+                 [clj-time "0.6.0"]]
   :profiles {:dev {:dependencies [[org.apache.hadoop/hadoop-core "0.20.2-dev"]
                                   [midje-cascalog "0.4.0"]
                                   [incanter/incanter-charts "1.3.0"]]
