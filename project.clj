@@ -8,16 +8,12 @@
   :repositories {"conjars" "http://conjars.org/repo/"}
   :dependencies [[org.clojure/clojure "1.4.0"]
                  [org.clojure/math.numeric-tower "0.0.1"]
-                 [org.clojure/data.json "0.2.1"]
+                 [org.clojure/data.json "0.2.4"]
                  [clj-http "0.4.3"]
-                 [cheshire "4.0.0"]
                  [clojureql "1.0.4"]
                  [cartodb-clj "1.5.0"]
                  [org.clojure/clojure-contrib "1.2.0"]
                  [org.clojars.robinkraft/clj-aws "0.0.2-SNAPSHOT"]
                  [clj-time "0.6.0"]]
-  :profiles {:dev {:dependencies [[org.apache.hadoop/hadoop-core "0.20.2-dev"]
-                                  [midje-cascalog "0.4.0"]
-                                  [incanter/incanter-charts "1.3.0"]]
-                   :plugins [[lein-swank "1.4.4"]
+  :profiles {:dev {:plugins [[lein-swank "1.4.4"]
                              [lein-midje "2.0.0-SNAPSHOT"]]}})
