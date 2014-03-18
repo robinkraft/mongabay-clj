@@ -1,7 +1,6 @@
 (ns mongabay-clj.sqlize
   (:use [clojureql.internal]
-        [clojure.contrib.string :only (chop)])
-  (:require [cheshire.custom :as json]))
+        [clojure.contrib.string :only (chop)]))
 
 (defn clean-str
   "accepts a string and preps it for an SQL query, specifically
