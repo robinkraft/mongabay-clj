@@ -7,14 +7,14 @@
      resources/aws_creds.json"
   (:use [cartodb.playground]
         [mongabay-clj.sqlize]
-        [clojure.data.json :only (read-json)]
         [clj-aws.core]
         [clj-aws.ses])
   (:require [cartodb.core :as carto]
             [clojure.java.io :as io]
-            [cheshire.custom :as json]
+            [clojure.data.json :as json]
             [clj-http.client :as http]
-            [clj-time.format :as date])
+            [clj-time.format :as date]
+            [cartodb.core :as cartodb])
   (:gen-class :main true))
 
 (def field-vec
@@ -22,31 +22,16 @@
   [:guid :loc :lat :lon :title :thumbnail :description :published
    :author :updated :keywords])
 
-(def mongabay-url
-  "a JSON endpoint for all mongabay articles with geo-coordinates"
-  "http://news.mongabay.com/map/json/")
-
 (defn get-creds
-  [fname]
-  (let [json-creds (io/resource fname)]
-    (if (nil? json-creds)
-      (throw (Exception. (format "%s must be in resources path" fname)))
-      (read-json (slurp json-creds)))))
+  [path]
+  (json/read-json (slurp path)))
 
 (defn mongabay-query
   "Fetch and decode mongabay JSON"
-  []
+  [mongabay-url]
   (-> (http/get mongabay-url)
       (:body)
-      (json/parse-string true)))
-
-(defn date-ify
-  "Convert `published` string to proper ISO-style dates (e.g. `December 25, 1999` -> `1999-12-25`)."
-  [s]
-  (let [words->date (date/formatter "MMM dd, YYYY")
-        date->iso (date/formatter "YYYY-MM-dd")]
-    (->> (date/parse words->date s)
-         (date/unparse date->iso))))
+      (json/read-json)))
 
 (defn doto-map
   "accepts a map, vector of keys, and a function (with arguments) to
@@ -60,13 +45,13 @@
   [m]
   (-> (select-keys m field-vec)
       (doto-map [:title :description] clean-str)
-      (doto-map [:keywords] csv-ify)
-      (doto-map [:published] date-ify)))
+      (doto-map [:keywords] csv-ify)))
 
 (defn convert-entries
   "accepts a collection of maps and converts them into the appropriate
   clojure data structures."
   [coll]
+
   (let [sub-coll (map prep-entry coll)]
     (concat [(-> sub-coll first keys vec)]
             (map (comp vec vals) sub-coll))))
@@ -80,15 +65,13 @@
   Example usage:
     (upload-stories \"monga_test\")
     => {:time 0.061, :total_rows 331, :rows []}"
-  [table-name cartodb-creds]
-  (let [data (convert-entries (mongabay-query))]
+  [table-name cartodb-creds mongabay-url]
+  (let [data (convert-entries (mongabay-query mongabay-url))]
     (do
-
       ;; delete existing entries
       (delete-all (:user cartodb-creds) cartodb-creds table-name)
 
       ;; insert the new stories as rows into the cartodb table
-
       (apply insert-rows (:user cartodb-creds) cartodb-creds table-name data)
 
       ;; georeference the table using the coordinate variables named
@@ -101,7 +84,7 @@
   ""
   [aws-creds address-vec body]
   (let [subject "Mongabay map update"
-        clnt (client (credentials (:access-id aws-creds) (:private-key aws-creds)))
+        clnt (client (credentials (:access-id aws-creds) (:secret-key aws-creds)))
         from "mongabay@gmail.com"
         dst (destination address-vec)
         msg (message subject body)]
@@ -112,11 +95,11 @@
    notification email upon completion.
 
    Usage:
-     > java -jar mongabay-clj-0.1.0-SNAPSHOT-standalone.jar monga_test email@email.com"  
-  [table & email-addresses]
-  (let [cartodb-creds (get-creds "creds.json")
-        aws-creds (get-creds "aws_creds.json")
-        return-map (upload-stories table cartodb-creds)
+     > java -jar mongabay-clj-0.1.0-SNAPSHOT-standalone.jar monga_test http://news.mongabay.com/json/?nocache=true&limit=200 /tmp/aws.json /tmp/cartodb.json email@email.com"
+  [table mongabay-url aws-creds cartodb-creds & email-addresses]
+  (let [cartodb-creds (get-creds cartodb-creds)
+        aws-creds (get-creds aws-creds)
+        return-map (upload-stories table cartodb-creds mongabay-url)
         body (format "Uploaded %d stories to CartoDB table '%s'" (:total_rows return-map) table)]
     (if (seq? email-addresses)
       (notify-by-email aws-creds email-addresses body))))
